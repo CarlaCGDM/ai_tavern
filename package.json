@@ -2,6 +2,7 @@
   "name": "ai_tavern",
   "version": "0.1.0",
   "private": true,
+  "homepage":".",
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
     "@react-three/drei": "^10.0.4",
