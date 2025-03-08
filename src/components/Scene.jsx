@@ -17,10 +17,27 @@ export default function Scene() {
 
     useEffect(() => {
         console.log(lastMessages); // Will log correctly when state updates
-      }, [lastMessages]);
+    }, [lastMessages]);
+
+    // Function to make API call
+    const getCharacterResponse = useCallback(async (char1, char2, userMessage) => {
+        const prompt = `Reply in under 200 characters to the following message from a ${char2.characterization} as if you were ${char1.characterization}: "${userMessage}". Also, choose an emotion from this list that matches your response: [idle, angry, happy, sad, shocked]. Return your response as a JSON object with keys "characterMessage" and "characterEmotion".`;
+
+        const result = await model.generateContent(prompt);
+        const response = result.response.text()
+
+        const cleanedResponse = response.replace(/```json|```/g, "").trim();
+
+        try {
+            return JSON.parse(cleanedResponse); // Parse the cleaned response
+        } catch (error) {
+            console.error("Error parsing AI response:", error);
+            return { characterMessage: "Error generating response.", characterEmotion: "idle" };
+        }
+    }, [model]);
 
     // Simulate a conversation between two characters
-    const startConversation = async (char1, char2) => {
+    const startConversation = useCallback(async (char1, char2) => {
         setConversationActive(true);
         setCooldown(true);
 
@@ -52,7 +69,7 @@ export default function Scene() {
             char1.setEmotion(response1.characterEmotion);
             char2.setMessage("");
             await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 1 second
-            
+
             // Generate response for char2 based on char1's last message
             const response2 = await getCharacterResponse(
                 char2,
@@ -67,7 +84,7 @@ export default function Scene() {
                 ...prev,
                 [char1.name]: response1.characterMessage,
                 [char2.name]: response2.characterMessage,
-              }));
+            }));
 
             await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 1 second
         }
@@ -88,24 +105,7 @@ export default function Scene() {
             setCooldown(false);
             cooldownTimeoutRef.current = null; // Clear the ref after the timeout
         }, 3000); // 3-second cooldown
-    };
-
-    // Function to make API call
-    const getCharacterResponse = async (char1, char2, userMessage) => {
-        const prompt = `Reply in under 200 characters to the following message from a ${char2.characterization} as if you were ${char1.characterization}: "${userMessage}". Also, choose an emotion from this list that matches your response: [idle, angry, happy, sad, shocked]. Return your response as a JSON object with keys "characterMessage" and "characterEmotion".`;
-
-        const result = await model.generateContent(prompt);
-        const response = result.response.text()
-
-        const cleanedResponse = response.replace(/```json|```/g, "").trim();
-
-        try {
-            return JSON.parse(cleanedResponse); // Parse the cleaned response
-        } catch (error) {
-            console.error("Error parsing AI response:", error);
-            return { characterMessage: "Error generating response.", characterEmotion: "idle" };
-        }
-    };
+    }, [setConversationActive, setCooldown, setLastMessages, getCharacterResponse, lastMessages]);
 
     // Detect collisions between characters
     const detectCollisions = useCallback(() => {
@@ -131,7 +131,7 @@ export default function Scene() {
                 }
             }
         }
-    }, [conversationActive, cooldown]);
+    }, [conversationActive, cooldown, startConversation]);
 
     // Update collision detection on every frame
     useEffect(() => {

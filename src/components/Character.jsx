@@ -10,6 +10,7 @@ const Character = forwardRef(({
 }, ref) => {
     const [targetPosition, setTargetPosition] = useState([0, 0, 0]);
     const [currentMessage, setCurrentMessage] = useState(message);
+    // eslint-disable-next-line no-unused-vars
     const [currentEmotion, setCurrentEmotion] = useState("idle");
     const [isTalking, setIsTalking] = useState(false);
     const meshRef = useRef();
@@ -26,7 +27,9 @@ const Character = forwardRef(({
         if (!meshRef.current || isTalking) return; // Stop moving if talking
 
         const speed = 0.03;
+        // eslint-disable-next-line no-unused-vars
         const [x, y, z] = meshRef.current.position;
+        // eslint-disable-next-line no-unused-vars
         const [tx, ty, tz] = targetPosition;
 
         // Calculate the direction vector
