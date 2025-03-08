@@ -209,7 +209,7 @@ export default function Scene() {
                 <Character
                     ref={(el) => (charactersRef.current[3] = el)}
                     position={[-1, 0, -1]}
-                    color="yellow"
+                    color="#948c1c"
                     name="Celebrity"
                     characterization="obnoxious uncharismatic celebrity, breaking down because fame didn't bring them friends"
                 />
