@@ -137,7 +137,7 @@ export default function Scene() {
     useEffect(() => {
         const interval = setInterval(detectCollisions, 1000 / 60); // 60 FPS
         return () => clearInterval(interval);
-    }, [conversationActive, cooldown, detectCollisions]); // Add cooldown to dependencies
+    }, [conversationActive, cooldown, detectCollisions, startConversation]); // Add cooldown to dependencies
 
     // Cleanup the timeout on component unmount
     useEffect(() => {
