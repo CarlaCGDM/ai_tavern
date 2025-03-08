@@ -1,5 +1,5 @@
 import { OrbitControls } from "@react-three/drei";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Character from "./Character";
 
@@ -13,7 +13,11 @@ export default function Scene() {
     const [conversationActive, setConversationActive] = useState(false);
     const [cooldown, setCooldown] = useState(false);
     const cooldownTimeoutRef = useRef(null); // Ref to track the timeout
-    const [lastMessages, setLastMessages] = useState("");
+    const [lastMessages, setLastMessages] = useState({});
+
+    useEffect(() => {
+        console.log(lastMessages); // Will log correctly when state updates
+      }, [lastMessages]);
 
     // Simulate a conversation between two characters
     const startConversation = async (char1, char2) => {
@@ -33,51 +37,38 @@ export default function Scene() {
         char1.meshRef.current.rotation.y = angle1;
         char2.meshRef.current.rotation.y = angle2;
 
-        // // Exchange messages
-        // const messages1 = [
-        //     `Hello, ${char2.name}!`,
-        //     "How are you today?",
-        //     "Nice weather we're having!",
-        //     "Goodbye!",
-        // ];
-        // const messages2 = [
-        //     `Hi, ${char1.name}!`,
-        //     "I'm doing well, thanks!",
-        //     "Yes, it's lovely!",
-        //     "See you later!",
-        // ];
-
         // Initialize last messages
         setLastMessages({ [char1.name]: "", [char2.name]: "" });
-        console.log(lastMessages)
 
         // Exchange messages
         for (let i = 0; i < 4; i++) { // Limit to 4 exchanges
-            // 🚨 **UPDATED**: Generate response for char1 based on char2's last message
-            console.log(char1)
-            console.log(char2)
-            console.log(lastMessages)
+            // Generate response for char1 based on char2's last message
             const response1 = await getCharacterResponse(
-                char1.characterization,
-                char2.characterization,
+                char1,
+                char2,
                 lastMessages[char2.name] || `Start a conversation with a ${char2.characterization} as if you were ${char1.characterization}.`
             );
             char1.setMessage(response1.characterMessage);
             char1.setEmotion(response1.characterEmotion);
-            setLastMessages((prev) => ({ ...prev, [char1.name]: response1.characterMessage }));
             char2.setMessage("");
             await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 1 second
-
-            // 🚨 **UPDATED**: Generate response for char2 based on char1's last message
+            
+            // Generate response for char2 based on char1's last message
             const response2 = await getCharacterResponse(
-                char2.characterization,
-                char1.characterization,
-                lastMessages[char1.name]
+                char2,
+                char1,
+                response1.characterMessage
             );
             char2.setMessage(response2.characterMessage);
             char2.setEmotion(response2.characterEmotion);
-            setLastMessages((prev) => ({ ...prev, [char2.name]: response2.characterMessage }));
             char1.setMessage("");
+
+            setLastMessages((prev) => ({
+                ...prev,
+                [char1.name]: response1.characterMessage,
+                [char2.name]: response2.characterMessage,
+              }));
+
             await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 1 second
         }
 
@@ -100,8 +91,8 @@ export default function Scene() {
     };
 
     // Function to make API call
-    const getCharacterResponse = async (characterization, partner, userMessage) => {
-        const prompt = `Reply in under 200 characters to the following message from a ${partner} as if you were ${characterization}: "${userMessage}". Also, choose an emotion from this list that matches your response: [idle, angry, happy, sad, shocked]. Return your response as a JSON object with keys "characterMessage" and "characterEmotion".`;
+    const getCharacterResponse = async (char1, char2, userMessage) => {
+        const prompt = `Reply in under 200 characters to the following message from a ${char2.characterization} as if you were ${char1.characterization}: "${userMessage}". Also, choose an emotion from this list that matches your response: [idle, angry, happy, sad, shocked]. Return your response as a JSON object with keys "characterMessage" and "characterEmotion".`;
 
         const result = await model.generateContent(prompt);
         const response = result.response.text()
@@ -117,7 +108,7 @@ export default function Scene() {
     };
 
     // Detect collisions between characters
-    const detectCollisions = () => {
+    const detectCollisions = useCallback(() => {
         if (conversationActive || cooldown) return; // Skip if a conversation is already active
 
         const characters = charactersRef.current;
@@ -140,13 +131,13 @@ export default function Scene() {
                 }
             }
         }
-    };
+    }, [conversationActive, cooldown]);
 
     // Update collision detection on every frame
     useEffect(() => {
         const interval = setInterval(detectCollisions, 1000 / 60); // 60 FPS
         return () => clearInterval(interval);
-    }, [conversationActive, cooldown]); // Add cooldown to dependencies
+    }, [conversationActive, cooldown, detectCollisions]); // Add cooldown to dependencies
 
     // Cleanup the timeout on component unmount
     useEffect(() => {
@@ -188,6 +179,7 @@ export default function Scene() {
             />
             <Character
                 ref={(el) => (charactersRef.current[3] = el)}
+                position={[-3, 0, -3]}
                 color="darkGray"
                 name="Ghost"
                 characterization="weeping ghost looking for her lost love"

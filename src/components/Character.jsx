@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from "react";
+import { useState, useEffect, useRef, useImperativeHandle, forwardRef, useCallback } from "react";
 import { Html } from "@react-three/drei";
 
 const Character = forwardRef(({
@@ -22,7 +22,7 @@ const Character = forwardRef(({
     };
 
     // Move the character toward the target position
-    const move = () => {
+    const move = useCallback(() => {
         if (!meshRef.current || isTalking) return; // Stop moving if talking
 
         const speed = 0.03;
@@ -45,13 +45,13 @@ const Character = forwardRef(({
         if (Math.abs(dx) < 0.1 && Math.abs(dz) < 0.1) {
             setTargetPosition(generateRandomPosition()); // Set a new target
         }
-    };
+    }, [isTalking, targetPosition]);
 
     // Update movement on every frame
     useEffect(() => {
         const interval = setInterval(move, 1000 / 60); // 60 FPS
         return () => clearInterval(interval);
-    }, [targetPosition, isTalking]);
+    }, [move]);
 
     // Set initial target position
     useEffect(() => {
