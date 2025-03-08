@@ -1,7 +1,9 @@
 import { OrbitControls } from "@react-three/drei";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { Canvas } from '@react-three/fiber';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Character from "./Character";
+import FriendshipDisplay from "./FriendshipDisplay";
 
 export default function Scene() {
 
@@ -20,8 +22,16 @@ export default function Scene() {
     }, [lastMessages]);
 
     // Function to make API call
-    const getCharacterResponse = useCallback(async (char1, char2, userMessage) => {
-        const prompt = `Reply in under 200 characters to the following message from a ${char2.characterization} as if you were ${char1.characterization}: "${userMessage}". Also, choose an emotion from this list that matches your response: [idle, angry, happy, sad, shocked]. Return your response as a JSON object with keys "characterMessage" and "characterEmotion".`;
+    const getCharacterResponse = useCallback(async (char1, char2, userMessage, friendshipLevel = 0) => {
+
+        let friendshipContext = "";
+        if (friendshipLevel > 10) {
+            friendshipContext = "You LOVE this person.";
+        } else if (friendshipLevel < -10) {
+            friendshipContext = "You HATE this person.";
+        }
+
+        const prompt = `Reply in under 200 characters to the following message from a ${char2.characterization} as if you were ${char1.characterization}. ${friendshipContext}: "${userMessage}". Also, choose an emotion from this list that matches your response: [idle, angry, happy, sad, shocked]. Return your response as a JSON object with keys "characterMessage" and "characterEmotion".`;
 
         const result = await model.generateContent(prompt);
         const response = result.response.text()
@@ -63,22 +73,26 @@ export default function Scene() {
             const response1 = await getCharacterResponse(
                 char1,
                 char2,
-                lastMessages[char2.name] || `Start a conversation with a ${char2.characterization} as if you were ${char1.characterization}.`
+                lastMessages[char2.name] || `Start a conversation with a ${char2.characterization} as if you were ${char1.characterization}.`,
+                char1.friendshipIndex[char2.name] // Pass friendship level
             );
             char1.setMessage(response1.characterMessage);
             char1.setEmotion(response1.characterEmotion);
             char2.setMessage("");
+            char2.updateFriendship(char1.name, response1.characterEmotion); // Update friendship
             await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 1 second
 
             // Generate response for char2 based on char1's last message
             const response2 = await getCharacterResponse(
                 char2,
                 char1,
-                response1.characterMessage
+                response1.characterMessage,
+                char2.friendshipIndex[char1.name] // Pass friendship level
             );
             char2.setMessage(response2.characterMessage);
             char2.setEmotion(response2.characterEmotion);
             char1.setMessage("");
+            char1.updateFriendship(char2.name, response2.characterEmotion);
 
             setLastMessages((prev) => ({
                 ...prev,
@@ -148,42 +162,59 @@ export default function Scene() {
         };
     }, []);
 
+    // 🚨 **ADDED**: Extract friendship data for display
+    const friendshipData = charactersRef.current.map((character) => ({
+        name: character.name,
+        friendshipIndex: character.friendshipIndex || {},
+    }));
+
     return (
         <>
-            <OrbitControls />
-            <ambientLight intensity={0.5} />
-            <pointLight position={[10, 10, 10]} />
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
-                <planeGeometry args={[1000, 1000]} />
-                <meshStandardMaterial color="light green" />
-            </mesh>
-            <Character
-                ref={(el) => (charactersRef.current[0] = el)}
-                position={[2, 0, 2]}
-                color="red"
-                name="Knight"
-                characterization="shy medieval knight"
-            />
-            <Character
-                ref={(el) => (charactersRef.current[1] = el)}
-                position={[6, 0, 6]}
-                color="green"
-                name="Alien"
-                characterization="alien from Mars who is easily angered"
-            />
-            <Character
-                ref={(el) => (charactersRef.current[2] = el)}
-                color="blue"
-                name="Wizard"
-                characterization="wise old wizard"
-            />
-            <Character
-                ref={(el) => (charactersRef.current[3] = el)}
-                position={[-3, 0, -3]}
-                color="darkGray"
-                name="Ghost"
-                characterization="weeping ghost looking for her lost love"
-            />
+            <Canvas>
+                <OrbitControls />
+                <ambientLight intensity={0.5} />
+                <pointLight position={[10, 10, 10]} />
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]}>
+                    <planeGeometry args={[1000, 1000]} />
+                    <meshStandardMaterial color="light green" />
+                </mesh>
+                <Character
+                    ref={(el) => (charactersRef.current[0] = el)}
+                    position={[2, 0, 2]}
+                    color="red"
+                    name="Knight"
+                    characterization="shy medieval knight"
+                />
+                <Character
+                    ref={(el) => (charactersRef.current[1] = el)}
+                    position={[6, 0, 6]}
+                    color="green"
+                    name="Alien"
+                    characterization="alien from Mars who is easily angered"
+                />
+                <Character
+                    ref={(el) => (charactersRef.current[2] = el)}
+                    color="blue"
+                    name="Wizard"
+                    characterization="wise old wizard"
+                />
+                <Character
+                    ref={(el) => (charactersRef.current[3] = el)}
+                    position={[-3, 0, -3]}
+                    color="darkGray"
+                    name="Ghost"
+                    characterization="weeping ghost looking for her lost love"
+                />
+
+                <Character
+                    ref={(el) => (charactersRef.current[3] = el)}
+                    position={[-1, 0, -1]}
+                    color="yellow"
+                    name="Celebrity"
+                    characterization="obnoxious uncharismatic celebrity, breaking down because fame didn't bring them friends"
+                />
+            </Canvas>
+            <FriendshipDisplay characters={friendshipData} />
         </>
     );
 }

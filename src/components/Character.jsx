@@ -12,6 +12,7 @@ const Character = forwardRef(({
     const [currentMessage, setCurrentMessage] = useState(message);
     // eslint-disable-next-line no-unused-vars
     const [currentEmotion, setCurrentEmotion] = useState("idle");
+    const [friendshipIndex, setFriendshipIndex] = useState({}); // Friendship index
     const [isTalking, setIsTalking] = useState(false);
     const meshRef = useRef();
 
@@ -61,11 +62,29 @@ const Character = forwardRef(({
         setTargetPosition(generateRandomPosition());
     }, []);
 
+    // Update friendship index
+    const updateFriendship = (otherCharacter, emotion) => {
+        setFriendshipIndex((prev) => {
+            const currentPoints = prev[otherCharacter] || 0;
+            let newPoints = currentPoints;
+
+            if (emotion === "happy") {
+                newPoints += 1; // Increase points for positive response
+            } else if (emotion === "sad" || emotion === "angry") {
+                newPoints -= 1; // Decrease points for negative response
+            }
+
+            return { ...prev, [otherCharacter]: newPoints };
+        });
+    };
+
     // Expose methods and properties to the parent component
     useImperativeHandle(ref, () => ({
         setMessage: (newMessage) => setCurrentMessage(newMessage),
         setEmotion: (newEmotion) => setCurrentEmotion(newEmotion),
         setIsTalking: (talking) => setIsTalking(talking),
+        updateFriendship,
+        friendshipIndex,
         position: meshRef.current?.position,
         meshRef: meshRef, // Expose meshRef
         name,
