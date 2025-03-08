@@ -183,7 +183,7 @@ export default function Scene() {
                     position={[2, 0, 2]}
                     color="red"
                     name="Knight"
-                    characterization="shy medieval knight"
+                    characterization="shy medieval knight looking for true love"
                 />
                 <Character
                     ref={(el) => (charactersRef.current[1] = el)}
@@ -207,7 +207,7 @@ export default function Scene() {
                 />
 
                 <Character
-                    ref={(el) => (charactersRef.current[3] = el)}
+                    ref={(el) => (charactersRef.current[4] = el)}
                     position={[-1, 0, -1]}
                     color="#948c1c"
                     name="Celebrity"
