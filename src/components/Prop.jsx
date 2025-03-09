@@ -1,29 +1,31 @@
 import { useLoader } from "@react-three/fiber";
-import { Html, Clone } from "@react-three/drei";
+import { Html, Clone, useGLTF } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { forwardRef, Suspense, useState, useEffect } from "react";
 import * as THREE from "three";
 
 const Model = ({ modelUrl, onComputedSize }) => {
-    const gltf = useLoader(GLTFLoader, process.env.PUBLIC_URL + modelUrl);
-    const [computed, setComputed] = useState(false);
+    const gltf = useGLTF(process.env.PUBLIC_URL + modelUrl);
 
     useEffect(() => {
-        if (!computed && gltf.scene) {
+        if (gltf.scene) {
             const bbox = new THREE.Box3().setFromObject(gltf.scene);
             const size = new THREE.Vector3();
             bbox.getSize(size);
-            onComputedSize(size); // Send size to parent component
-            setComputed(true);
+            onComputedSize(size); // Ensure size updates when the model changes
         }
-    }, [gltf, computed, onComputedSize]);
+    }, [gltf.scene, onComputedSize]); // React updates only when the model changes
 
     return <Clone object={gltf.scene} />;
 };
 
-const Prop = forwardRef(({ position, description, modelUrl }, ref) => {
+
+const Prop = forwardRef(({ position, rotation, description, modelUrl }, ref) => {
     const [validUrl, setValidUrl] = useState("/assets/models/treasureChest.glb"); // Fallback model
     const [size, setSize] = useState(new THREE.Vector3(1, 1, 1)); // Default size
+
+    // Convert degrees to radians
+    const radRotation = rotation.map(THREE.MathUtils.degToRad);
 
     useEffect(() => {
         if (modelUrl) {
@@ -32,7 +34,7 @@ const Prop = forwardRef(({ position, description, modelUrl }, ref) => {
     }, [modelUrl]);
 
     return (
-        <group ref={ref} position={position} size={size} description={description}>
+        <group ref={ref} position={position} rotation={radRotation || [0, 0, 0]} size={size} description={description}>
             {/* Debugging Collider */}
             <mesh position={[0, size.y / 2, 0]}>
                 <boxGeometry args={[size.x, size.y, size.z]} />
