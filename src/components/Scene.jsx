@@ -36,7 +36,7 @@ export default function Scene() {
 
     return (
         <>
-            <Canvas>
+            <Canvas camera={{ position: [0, 3, 10], fov: 50 }}>
                 <SceneSetup />
                 <PropsSetup propsRef={propsRef} />
                 <CharacterSetup charactersRef={charactersRef} />
