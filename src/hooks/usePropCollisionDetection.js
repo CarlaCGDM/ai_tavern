@@ -4,6 +4,7 @@ export const usePropCollisionDetection = (characters, props, handlePropInteracti
     const detectPropCollisions = useCallback(() => {
         if (conversationActive || cooldown || propCooldown) return; // Skip if in cooldown
 
+
         for (let i = 0; i < characters.length; i++) {
             for (let j = 0; j < props.length; j++) {
                 const character = characters[i];
@@ -17,7 +18,8 @@ export const usePropCollisionDetection = (characters, props, handlePropInteracti
                 const distance = Math.sqrt(dx * dx + dz * dz);
 
                 // If character is close enough, start a prop interaction
-                if (distance < prop.size[0] + 0.5) {
+                if (distance < prop.size.x + 0.5) {
+                    console.log("collided with prop!")
                     handlePropInteraction(character, prop);
                 }
             }

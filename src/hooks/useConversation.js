@@ -27,7 +27,7 @@ export const useConversation = (getCharacterResponse) => {
         setLastMessages({ [char1.name]: "", [char2.name]: "" });
 
         // Exchange messages
-        for (let i = 0; i < 4; i++) { // Limit to 4 exchanges
+        for (let i = 0; i < 2; i++) { // Limit to 2 exchanges
             const response1 = await getCharacterResponse(
                 char1,
                 char2,

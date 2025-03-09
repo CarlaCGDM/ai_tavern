@@ -1,11 +1,11 @@
-import { useLoader, useFrame } from "@react-three/fiber";
+import { useLoader } from "@react-three/fiber";
 import { Html, Clone } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { forwardRef, Suspense, useState, useEffect } from "react";
 import * as THREE from "three";
 
 const Model = ({ modelUrl, onComputedSize }) => {
-    const gltf = useLoader(GLTFLoader, modelUrl);
+    const gltf = useLoader(GLTFLoader, process.env.PUBLIC_URL + modelUrl);
     const [computed, setComputed] = useState(false);
 
     useEffect(() => {
@@ -32,7 +32,7 @@ const Prop = forwardRef(({ position, description, modelUrl }, ref) => {
     }, [modelUrl]);
 
     return (
-        <group ref={ref} position={position} size={size}>
+        <group ref={ref} position={position} size={size} description={description}>
             {/* Debugging Collider */}
             <mesh position={[0, size.y / 2, 0]}>
                 <boxGeometry args={[size.x, size.y, size.z]} />
