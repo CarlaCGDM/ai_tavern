@@ -12,8 +12,9 @@ const Character = forwardRef(({
     characterization = "friendly"
 }, ref) => {
     const meshRef = useRef();
-    const [isTalking, setIsTalking] = useState(false); // 🚨 **MOVED**: Define isTalking here
-    const { targetPosition } = useCharacterMovement(meshRef, isTalking); // 🚨 **PASSED**: isTalking
+    const [isTalking, setIsTalking] = useState(false);
+    const [isInteractingWithProp, setIsInteractingWithProp] = useState(false); // 🚨 **ADDED**: Prop interaction state
+    const { targetPosition } = useCharacterMovement(meshRef, isTalking || isInteractingWithProp); // 🚨 **UPDATED**: Include prop interaction
     const { friendshipIndex, updateFriendship } = useFriendshipIndex();
     const { currentMessage, setCurrentMessage, currentEmotion, setCurrentEmotion } = useCharacterMessage(message);
 
@@ -22,21 +23,25 @@ const Character = forwardRef(({
         setMessage: (newMessage) => setCurrentMessage(newMessage),
         setEmotion: (newEmotion) => setCurrentEmotion(newEmotion),
         setIsTalking: (talking) => setIsTalking(talking),
+        setIsInteractingWithProp: (interacting) => setIsInteractingWithProp(interacting), // 🚨 **ADDED**: Expose prop interaction
         updateFriendship,
         friendshipIndex,
         position: meshRef.current?.position,
         meshRef: meshRef, // Expose meshRef
         name,
         characterization,
+        isInteractingWithProp
     }));
 
     return (
         <>
-            <mesh ref={meshRef} position={position}>
-                <CharacterMessage message={currentMessage} color={color} name={name} />
-                <boxGeometry args={[0.5, 1, 0.5]} />
-                <meshStandardMaterial color={color} />
-            </mesh>
+            <group ref={meshRef} position={position}>
+                <mesh position={[0, 0.5, 0]}>
+                    <CharacterMessage message={currentMessage} color={color} name={name} />
+                    <boxGeometry args={[0.5, 1, 0.5]} />
+                    <meshStandardMaterial color={color} />
+                </mesh>
+            </group >
         </>
     );
 });
