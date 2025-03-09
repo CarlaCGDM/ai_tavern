@@ -1,4 +1,3 @@
-// hooks/useCollisionDetection.js
 import { useCallback, useEffect } from "react";
 
 export const useCollisionDetection = (characters, startConversation, conversationActive, cooldown) => {

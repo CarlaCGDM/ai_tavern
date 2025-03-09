@@ -1,6 +1,4 @@
-import { useLoader } from "@react-three/fiber";
 import { Html, Clone, useGLTF } from "@react-three/drei";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { forwardRef, Suspense, useState, useEffect } from "react";
 import * as THREE from "three";
 
