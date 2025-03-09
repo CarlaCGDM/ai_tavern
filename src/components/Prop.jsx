@@ -34,7 +34,7 @@ const Prop = forwardRef(({ position, description, modelUrl }, ref) => {
     return (
         <group ref={ref} position={position} size={size}>
             {/* Debugging Collider */}
-            <mesh>
+            <mesh position={[0, size.y / 2, 0]}>
                 <boxGeometry args={[size.x, size.y, size.z]} />
                 <meshStandardMaterial visible={true} color="black" wireframe />
             </mesh>
@@ -45,7 +45,7 @@ const Prop = forwardRef(({ position, description, modelUrl }, ref) => {
             </Suspense>
 
             {/* Floating text description */}
-            <Html as="div" center position={[0, size.y / 2 + 1, 0]}>
+            <Html as="div" center position={[0, size.y * 1.5, 0]}>
                 <p style={{
                     color: "white",
                     backgroundColor: "rgba(0, 0, 0, 0.8)",

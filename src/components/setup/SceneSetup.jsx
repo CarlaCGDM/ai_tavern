@@ -8,7 +8,7 @@ export default function SceneSetup() {
             <pointLight position={[10, 10, 10]} />
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
                 <planeGeometry args={[1000, 1000]} />
-                <meshStandardMaterial color="light green" />
+                <meshStandardMaterial color="lightGreen" />
             </mesh>
         </>
     );
