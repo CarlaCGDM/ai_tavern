@@ -31,10 +31,6 @@ export const usePropInteraction = (getCharacterResponse) => {
         character.setMessage(""); // Clear the message
         character.setIsInteractingWithProp(false); // Reset interaction state
 
-        // Move the character slightly away from the prop
-        character.meshRef.current.position.x -= dx * 0.5; // Move away from the prop
-        character.meshRef.current.position.z -= dz * 0.5; // Move away from the prop
-
         // End cooldown after 3 seconds
         setTimeout(() => {
             setPropCooldown(false); // End cooldown

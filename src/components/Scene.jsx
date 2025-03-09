@@ -4,7 +4,7 @@ import { useGenerativeAI } from "../hooks/useGenerativeAI";
 import { useConversation } from "../hooks/useConversation";
 import { useCollisionDetection } from "../hooks/useCollisionDetection";
 import { usePropCollisionDetection } from "../hooks/usePropCollisionDetection";
-import { usePropInteraction } from "../hooks/usePropInteraction"; // 🚨 **ADDED**: Import the new hook
+import { usePropInteraction } from "../hooks/usePropInteraction"; 
 import SceneSetup from "./setup/SceneSetup";
 import PropsSetup from "./setup/PropsSetup";
 import CharacterSetup from "./setup/CharactersSetup";
@@ -15,7 +15,7 @@ export default function Scene() {
     const propsRef = useRef([]);
     const { getCharacterResponse } = useGenerativeAI();
     const { conversationActive, cooldown, startConversation } = useConversation(getCharacterResponse);
-    const { propCooldown, handlePropInteraction } = usePropInteraction(getCharacterResponse); // 🚨 **ADDED**: Use the new hook
+    const { propCooldown, handlePropInteraction } = usePropInteraction(getCharacterResponse);
 
     // Use collision detection hooks
     useCollisionDetection(charactersRef.current, startConversation, conversationActive, cooldown);
