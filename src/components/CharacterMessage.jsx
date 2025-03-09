@@ -16,15 +16,30 @@ export default function CharacterMessage({ message, color, name }) {
         whiteSpace: "normal",
     };
 
+    const nameStyle = {
+        backgroundColor: "black",
+        color: "white",
+        padding: "10%",
+        borderRadius: "10px",
+        maxWidth: "300px",
+        width: "75px",
+        textAlign: "left",
+        fontSize: "13px",
+        margin: "0 auto",
+        wordWrap: "break-word",
+        whiteSpace: "normal",
+        textAlign: "center",
+    };
+
     return (
         <>
             {message && (
-                <Html as="div" center position={[0, 2, 0]}>
+                <Html as="div" center position={[0, 4, 0]}>
                     <p style={messageStyle}>{message}</p>
                 </Html>
             )}
-            <Html as="div" center position={[0, 0.7, 0]}>
-                <p>{name}</p>
+            <Html as="div" center position={[0, 3, 0]}>
+                <p style={nameStyle}>{name}</p>
             </Html>
         </>
     );

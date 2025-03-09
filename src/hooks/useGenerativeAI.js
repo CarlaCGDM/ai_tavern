@@ -3,8 +3,8 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const useGenerativeAI = () => {
     const genAI = new GoogleGenerativeAI("AIzaSyD0B-CjCwj_m65Ow22AIEX2GQgsXTFK_Ec");
-    // const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+    // const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const getCharacterResponse = useCallback(async (char1, char2, userMessage, friendshipLevel = 0) => {
         let friendshipContext = "";

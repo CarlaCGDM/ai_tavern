@@ -14,7 +14,7 @@ export const useCharacterMovement = (meshRef, isTalking) => {
     const move = useCallback(() => {
         if (!meshRef.current || isTalking) return; // Stop moving if talking
 
-        const speed = 0.01;
+        const speed = 0.005;
         const [x, y, z] = meshRef.current.position;
         const [tx, ty, tz] = targetPosition;
 

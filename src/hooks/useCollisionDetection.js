@@ -17,7 +17,7 @@ export const useCollisionDetection = (characters, startConversation, conversatio
                 const distance = Math.sqrt(dx * dx + dz * dz);
 
                 // If characters are close enough, start a conversation
-                if (distance < 1) {
+                if (distance < 2) {
                     startConversation(char1, char2);
                 }
             }
