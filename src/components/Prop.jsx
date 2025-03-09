@@ -1,6 +1,4 @@
-import { useLoader } from "@react-three/fiber";
 import { Html, Clone, useGLTF } from "@react-three/drei";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { forwardRef, Suspense, useState, useEffect } from "react";
 import * as THREE from "three";
 
@@ -36,10 +34,10 @@ const Prop = forwardRef(({ position, rotation, description, modelUrl }, ref) => 
     return (
         <group ref={ref} position={position} rotation={radRotation || [0, 0, 0]} size={size} description={description}>
             {/* Debugging Collider */}
-            <mesh position={[0, size.y / 2, 0]}>
+            {/* <mesh position={[0, size.y / 2, 0]}>
                 <boxGeometry args={[size.x, size.y, size.z]} />
                 <meshStandardMaterial visible={true} color="black" wireframe />
-            </mesh>
+            </mesh> */}
 
             {/* Load the model with suspense */}
             <Suspense fallback={<Html center><span>Loading...</span></Html>}>
@@ -47,7 +45,7 @@ const Prop = forwardRef(({ position, rotation, description, modelUrl }, ref) => 
             </Suspense>
 
             {/* Floating text description */}
-            <Html as="div" center position={[0, size.y * 1.5, 0]}>
+            {/* <Html as="div" center position={[0, size.y * 1.5, 0]}>
                 <p style={{
                     color: "white",
                     backgroundColor: "rgba(0, 0, 0, 0.8)",
@@ -56,7 +54,7 @@ const Prop = forwardRef(({ position, rotation, description, modelUrl }, ref) => 
                 }}>
                     {description}
                 </p>
-            </Html>
+            </Html> */}
         </group>
     );
 });

@@ -13,8 +13,8 @@ const Character = forwardRef(({
 }, ref) => {
     const meshRef = useRef();
     const [isTalking, setIsTalking] = useState(false);
-    const [isInteractingWithProp, setIsInteractingWithProp] = useState(false); // 🚨 **ADDED**: Prop interaction state
-    const { targetPosition } = useCharacterMovement(meshRef, isTalking || isInteractingWithProp); // 🚨 **UPDATED**: Include prop interaction
+    const [isInteractingWithProp, setIsInteractingWithProp] = useState(false); 
+    const { targetPosition } = useCharacterMovement(meshRef, isTalking || isInteractingWithProp); 
     const { friendshipIndex, updateFriendship } = useFriendshipIndex();
     const { currentMessage, setCurrentMessage, currentEmotion, setCurrentEmotion } = useCharacterMessage(message);
 
@@ -23,7 +23,7 @@ const Character = forwardRef(({
         setMessage: (newMessage) => setCurrentMessage(newMessage),
         setEmotion: (newEmotion) => setCurrentEmotion(newEmotion),
         setIsTalking: (talking) => setIsTalking(talking),
-        setIsInteractingWithProp: (interacting) => setIsInteractingWithProp(interacting), // 🚨 **ADDED**: Expose prop interaction
+        setIsInteractingWithProp: (interacting) => setIsInteractingWithProp(interacting), 
         updateFriendship,
         friendshipIndex,
         position: meshRef.current?.position,

@@ -1,4 +1,3 @@
-// hooks/useConversation.js
 import { useState, useCallback } from "react";
 
 export const useConversation = (getCharacterResponse) => {
@@ -66,10 +65,6 @@ export const useConversation = (getCharacterResponse) => {
         char1.setIsTalking(false);
         char2.setIsTalking(false);
         setConversationActive(false);
-
-        // Move characters slightly apart
-        char1.meshRef.current.position.x += 1; // Move Pink to the right
-        char2.meshRef.current.position.x -= 1; // Move Blue to the left
 
         // Use a ref to track the timeout
         setTimeout(() => {
