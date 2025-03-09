@@ -17,8 +17,8 @@ export const usePropCollisionDetection = (characters, props, handlePropInteracti
                 const dz = character.position.z - prop.position.z;
                 const distance = Math.sqrt(dx * dx + dz * dz);
 
-                // If character is close enough, start a prop interaction (random chance: 1 in 3)
-                if (distance < prop.size.x + 0.5 && Math.random() < 1 / 3) {
+                // If character is close enough, start a prop interaction
+                if (distance < prop.size.x) {
                     console.log("collided with prop!")
                     handlePropInteraction(character, prop);
                 }
