@@ -14,14 +14,14 @@ export default function CharacterSetup({ charactersRef }) {
             <Character
                 ref={(el) => (charactersRef.current[1] = el)}
                 position={[6, 0, 6]}
-                color="green"
+                color="blue"
                 name="Barbarian"
                 characterization="barbarian warrior looking for a fight"
                 modelUrl="/assets/models/characters/Barbarian.glb"
             />
             <Character
                 ref={(el) => (charactersRef.current[2] = el)}
-                color="blue"
+                color="purple"
                 name="Wizard"
                 characterization="wise wizard seeking knowledge"
                 modelUrl="/assets/models/characters/Mage.glb"
@@ -29,7 +29,7 @@ export default function CharacterSetup({ charactersRef }) {
             <Character
                 ref={(el) => (charactersRef.current[3] = el)}
                 position={[-3, 0, -3]}
-                color="darkGray"
+                color="green"
                 name="Rogue"
                 characterization="kind medieval rogue looking for friends"
                 modelUrl="/assets/models/characters/Rogue.glb"

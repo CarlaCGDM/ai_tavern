@@ -25,19 +25,41 @@ const Character = forwardRef(
         const { currentMessage, setCurrentMessage, currentEmotion, setCurrentEmotion } = useCharacterMessage(message);
 
         // Load the character model
-        const {scene, animations} = useGLTF(process.env.PUBLIC_URL + modelUrl);
+        const { scene, animations } = useGLTF(process.env.PUBLIC_URL + modelUrl);
         const { actions } = useAnimations(animations, meshRef);
 
         console.log(actions)
 
-        // Play animations based on character state
         useEffect(() => {
+            const fadeDuration = 0.2; // Duration of the fade transition
+        
             if (isTalking) {
-                actions["Idle"]?.play();
+                // Fade out all other animations
+                Object.values(actions).forEach((action) => {
+                    if (action.isRunning() && action !== actions["Idle"]) {
+                        action.fadeOut(fadeDuration);
+                    }
+                });
+                // Fade in the "Talk" animation
+                actions["Idle"]?.reset().fadeIn(fadeDuration).play();
             } else if (isInteractingWithProp) {
-                actions["Idle"]?.play();
+                // Fade out all other animations
+                Object.values(actions).forEach((action) => {
+                    if (action.isRunning() && action !== actions["Idle"]) {
+                        action.fadeOut(fadeDuration);
+                    }
+                });
+                // Fade in the "Interact" animation
+                actions["Idle"]?.reset().fadeIn(fadeDuration).play();
             } else {
-                actions["Walking_C"]?.play();
+                // Fade out all other animations
+                Object.values(actions).forEach((action) => {
+                    if (action.isRunning() && action !== actions["Walking_C"]) {
+                        action.fadeOut(fadeDuration);
+                    }
+                });
+                // Fade in the "Walk" animation
+                actions["Walking_C"]?.reset().fadeIn(fadeDuration).play();
             }
         }, [isTalking, isInteractingWithProp, actions]);
 
@@ -66,7 +88,7 @@ const Character = forwardRef(
 
                 {/* Character Model */}
                 <Suspense fallback={<Html center><span>Loading...</span></Html>}>
-                    <primitive object={scene} position={[0, 0, 0]} /> {/* Ensure position is [0, 0, 0] */}
+                    <primitive object={scene} position={[0, -0.05, 0]} /> {/* Ensure position is [0, 0, 0] */}
                 </Suspense>
 
                 {/* Character Message */}
