@@ -37,7 +37,7 @@ export const useConversation = (getCharacterResponse) => {
             char1.setEmotion(response1.characterEmotion);
             char2.setMessage("");
             char2.updateFriendship(char1.name, response1.characterEmotion);
-            await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 3 seconds
+            await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
 
             const response2 = await getCharacterResponse(
                 char2,
@@ -56,7 +56,7 @@ export const useConversation = (getCharacterResponse) => {
                 [char2.name]: response2.characterMessage,
             }));
 
-            await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 3 seconds
+            await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
         }
 
         // End conversation
@@ -69,7 +69,7 @@ export const useConversation = (getCharacterResponse) => {
         // Use a ref to track the timeout
         setTimeout(() => {
             setCooldown(false);
-        }, 3000); // 3-second cooldown
+        }, 5000); // 5-second cooldown
     }, [getCharacterResponse, lastMessages]);
 
     return { conversationActive, cooldown, startConversation };
